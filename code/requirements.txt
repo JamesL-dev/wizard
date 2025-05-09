@@ -1,0 +1,2 @@
+pygame==2.6.1
+pyModbusTCP==0.3.0

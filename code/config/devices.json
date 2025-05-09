@@ -1,0 +1,86 @@
+{
+  "devices": {
+    "start_button": {
+      "address": 5,
+      "reg_type": "coil",
+      "direction": "input"
+    },
+    "drop_target_reset": {
+      "address": 1,
+      "reg_type": "coil",
+      "direction": "output"
+    },
+    "game_over_bit": {
+      "address": 2,
+      "reg_type": "coil",
+      "direction": "output"
+    },
+    "load_ball": {
+      "address": 3,
+      "reg_type": "coil",
+      "direction": "output"
+    },
+    "auto_kick": {
+      "address": 4,
+      "reg_type": "coil",
+      "direction": "output"
+    },
+    "extra_ball": {
+        "address": 10,
+        "reg_type": "coil",
+        "direction": "output"
+    },
+    "slingshot": {
+      "address": 1,
+      "reg_type": "input_register",
+      "direction": "input",
+      "score": 10
+    },
+    "drop_target_accumulator": {
+      "address": 2,
+      "reg_type": "input_register",
+      "direction": "input",
+      "score": 10
+    },
+    "lane_switch_accumulator_1": {
+      "address": 3,
+      "reg_type": "input_register",
+      "direction": "input",
+      "score": 10
+    },
+    "lane_switch_accumulator_2": {
+      "address": 4,
+      "reg_type": "input_register",
+      "direction": "input",
+      "score": 10
+    },
+    "lane_switch_accumulator_3": {
+      "address": 5,
+      "reg_type": "input_register",
+      "direction": "input",
+      "score": 10
+    },
+    "lane_switch_accumulator_4": {
+      "address": 6,
+      "reg_type": "input_register",
+      "direction": "input",
+      "score": 10
+    },
+    "ball_drain": {
+      "address": 7,
+      "reg_type": "input_register",
+      "direction": "input"
+    },
+    "pop_bumper": {
+      "address": 8,
+      "reg_type": "input_register",
+      "direction": "input",
+      "score": 10
+    },
+    "shooter_lane_switch": {
+      "address": 11,
+      "reg_type": "coil",
+      "direction": "input"
+    }
+  }
+}

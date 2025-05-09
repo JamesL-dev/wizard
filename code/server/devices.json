@@ -1,0 +1,64 @@
+{
+  "devices": {
+    "start_button": {
+      "address": 0,
+      "reg_type": "coil",
+      "direction": "input"
+    },
+    "slingshot_left": {
+      "address": 1,
+      "reg_type": "coil",
+      "direction": "input"
+    },
+    "slingshot_right": {
+      "address": 2,
+      "reg_type": "coil",
+      "direction": "input"
+    },
+    "ball_trough": {
+      "address": 3,
+      "reg_type": "coil",
+      "direction": "input"
+    },
+    "ball_drain_1": {
+      "address": 4,
+      "reg_type": "coil",
+      "direction": "input"
+    },
+    "ball_drain_2": {
+      "address": 5,
+      "reg_type": "coil",
+      "direction": "input"
+    },
+    "lane_switch_1": {
+      "address": 6,
+      "reg_type": "coil",
+      "direction": "input"
+    },
+    "lane_switch_2": {
+      "address": 7,
+      "reg_type": "coil",
+      "direction": "input"
+    },
+    "pop_bumper_1": {
+      "address": 8,
+      "reg_type": "coil",
+      "direction": "input"
+    },
+    "pop_bumper_2": {
+      "address": 9,
+      "reg_type": "coil",
+      "direction": "input"
+    },
+    "pop_bumper_3": {
+      "address": 10,
+      "reg_type": "coil",
+      "direction": "input"
+    },
+    "launch_switch": {
+      "address": 11,
+      "reg_type": "coil",
+      "direction": "input"
+    }
+  }
+}
