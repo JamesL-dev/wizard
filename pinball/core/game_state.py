@@ -67,9 +67,8 @@ class GameStateController:
             # get music playing if not already
             if pygame.mixer.music.get_busy() is False:
                 self.sound_api.set_background_music("fight_song.wav", volume=1.0)
-            
-            
 
+            # check if event is start_button_pressed
             if event_name == "start_button_pressed":
                 print("Transitioning to play mode")
                 self.state = "play"
