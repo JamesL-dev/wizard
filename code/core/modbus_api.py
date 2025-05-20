@@ -6,7 +6,7 @@ from typing import Dict
 from pyModbusTCP.client import ModbusClient
 from core.device import Device
 
-class ModbusClientAPI:
+class ModbusAPI:
     def __init__(self, host: str, port: int, config_path: str, poll_interval: float = 0.1):
         self.host = host
         self.port = port
@@ -92,7 +92,7 @@ class ModbusClientAPI:
 if __name__ == "__main__":
     ip_addr = "192.168.1.10"
     # ip_addr = "localhost"
-    api = ModbusClientAPI(ip_addr, 502, "../config/devices.json")
+    api = ModbusAPI(ip_addr, 502, "../config/devices.json")
     try:
         count = 1
         while True:

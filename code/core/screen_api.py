@@ -3,9 +3,9 @@ import os
 import math
 import random
 
-from core import game_state
+from core.game_state import GameStateController
 
-class PinballScreenAPI:
+class ScreenAPI:
     def __init__(self):
         pygame.init()
         self.WIDTH, self.HEIGHT = pygame.display.Info().current_w, pygame.display.Info().current_h
@@ -36,6 +36,7 @@ class PinballScreenAPI:
 
         self.fixed_stars = [(random.randint(50, self.WIDTH - 50), random.randint(100, self.HEIGHT - 100)) for _ in range(15)]
         self.flashing_orbs = [(random.randint(100, self.WIDTH - 100), random.randint(150, self.HEIGHT - 150), random.randint(30, 60)) for _ in range(5)]
+
 
         self.high_scores = [("Gary", 10000), ("Tim", 8500), ("James", 7200)]
 
@@ -116,7 +117,7 @@ class PinballScreenAPI:
 if __name__ == "__main__":
     import time
 
-    screen_api = PinballScreenAPI()
+    screen_api = ScreenAPI()
     demo_states = ["attract", "launch", "play", "game_over", "high_scores"]
     score = 1000
     current = 0

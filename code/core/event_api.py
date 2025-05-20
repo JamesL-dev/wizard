@@ -11,14 +11,14 @@ Last Updated: 3/7/2025
 
 import threading
 import time
-from core.modbus_api import ModbusClientAPI
+from core.modbus_api import ModbusAPI
 
-class GameEventSystem:
+class EventAPI:
     """
     Monitors Modbus inputs for changes and emits events on rising edges or value changes.
     Allows registering callbacks for specific events.
     """
-    def __init__(self, modbus_api: ModbusClientAPI):
+    def __init__(self, modbus_api: ModbusAPI):
         self.api = modbus_api
         self.callbacks = {}
         self.last_values = {}
