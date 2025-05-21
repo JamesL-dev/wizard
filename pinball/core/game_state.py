@@ -53,21 +53,26 @@ class GameStateController:
         self.previous_state = 'attract'
         self.score = 0
         self.num_balls = 3
-        self.current_ball = 1
+        self.current_ball = 0
         self.game_over_elapsed_time = 0
+        
+        self.active_balls = 0
 
-        self.last_sling_time = 0
+        self.sound_api.set_background_music("fight_song.wav", volume=1.0)
+        # self.last_sling_time = 0
         print(f"[GameStateController] Initialized with state: {self.state}")
 
     def handle_event(self, event_name: str):
+        print(f"[GameStateController] Current state: {self.state}")
         print(f"[GameStateController] Handling event: {event_name}")
+        
 
         # attract state
         if self.state == "attract":
             
             # get music playing if not already
-            if pygame.mixer.music.get_busy() is False:
-                self.sound_api.set_background_music("fight_song.wav", volume=1.0)
+            # if pygame.mixer.music.get_busy() is False:
+            #     self.sound_api.set_background_music("fight_song.wav", volume=1.0)
 
             # check if event is start_button_pressed
             if event_name == "start_button_pressed":
@@ -78,26 +83,39 @@ class GameStateController:
                 self.score = 0
                 self.modbus_api.write_value("drop_target_reset", True)
                 self.modbus_api.write_value("load_ball", True)
+                self.modbus_api.write_value("load_ball", False)
             # reset previous state
             if self.previous_state != 'attract':
                 self.previous_state = 'attract'
 
         # play state
         elif self.state == "play":
-
+            self.current_ball = self.modbus_api.read_value('ball_drain')
+            
+            print(f"Current ball: {self.current_ball}")
+            print(f"Active balls: {self.active_balls}")
+            
+            # if self.current_ball < self.num_balls and self.active_balls == 0:
+            #     print("Loading ball")
+            #     # self.current_ball += 1    
+            #     # print(f"Ball {self.current_ball}")
+            #     self.active_balls += 1
+            
             # check if event is ball_drain and lose condition
             if event_name == "ball_drain_pressed":
                 print("Ball drained")
-                current_ball = self.modbus_api.read_value('ball_drain')
-                if current_ball < self.num_balls:
-                    # self.current_ball += 1
-                    print(f"Ball {self.current_ball}")
+                if self.current_ball < self.num_balls:
+                    self.active_balls = 0
                     self.modbus_api.write_value("load_ball", True)
+                    self.modbus_api.write_value("load_ball", False)
+                    # self.active_balls -= 1
                 else:
                     print("Game Over")
                     self.state = "game_over"
                     self.previous_state = 'play'
                     self.game_over_elapsed_time = 0
+                    self.active_balls = 0
+                    self.sound_api.set_background_music("fight_song.wav", volume=1.0)
                     self.modbus_api.write_value("game_over_bit", True)
                     time.sleep(10)
                     
@@ -121,23 +139,33 @@ class GameStateController:
                 self.game_over_elapsed_time = 0
 
     def update(self, delta_time: int):
-        print("[GameStateController] reading all values")
+        # print("[GameStateController] reading all values")
         all_values = self.modbus_api.read_all()
 
         # Check for low start_button coil
-        print("[GameStateController] Checking start button")
+        # print("[GameStateController] Checking start button")
         start_button_val = all_values.get("start_button", 1)  # assume 1 if missing
-        if self.state == "play" and start_button_val == 0:
-            print("[GameStateController] Start button released — returning to attract mode")
-            self.state = "attract"
-            self.previous_state = "play"
-            self.score = 0
-            self.current_ball = 1
-            self.game_over_elapsed_time = 0
-            return  # skip further updates this tick
-
         if self.state == "play":
             self.update_score()
+            if start_button_val == 0:
+                # print("[GameStateController] Start button released — returning to attract mode")
+                self.state = "attract"
+                self.previous_state = "play"
+                self.score = 0
+                self.current_ball = 1
+                self.game_over_elapsed_time = 0
+            return  # skip further updates this tick
+
+        if self.state == "game_over":
+            self.game_over_elapsed_time += delta_time
+            if self.game_over_elapsed_time > 10000:
+                print("[GameStateController] Game over timeout reached — returning to attract mode")
+                self.state = "attract"
+                self.previous_state = "game_over"
+                self.score = 0
+                # self.current_ball = 1
+                self.game_over_elapsed_time = 0
+        
 
     def update_score(self):
         total = 0

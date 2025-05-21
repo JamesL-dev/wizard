@@ -39,20 +39,22 @@ class SoundAPI:
         else:
             print(f"[SoundManager] No sound loaded with name '{name}'.")
     
-def set_background_music(self, filename: str, volume: float = 1.0):
-    print(f"[DEBUG] Setting background music: {filename} with volume {volume}")
-    path = os.path.join(self.sound_dir, filename)
-    if not os.path.exists(path):
-        print(f"[ERROR] Background music file not found: {path}")
-        return
-    try:
-        pygame.mixer.music.load(path)
-        print(f"[DEBUG] Background music loaded: {filename} from {path}")
-        pygame.mixer.music.set_volume(volume)
-        pygame.mixer.music.play(-1)
-        print(f"[DEBUG] Game music playback started.")
-    except Exception as e:
-        print(f"[ERROR] Failed to play background music: {e}")
+    def set_background_music(self, filename: str, volume: float = 1.0):
+        if pygame.mixer.music.get_busy():
+            pygame.mixer.music.stop()
+        print(f"[DEBUG] Setting background music: {filename} with volume {volume}")
+        path = os.path.join(self.sound_dir, filename)
+        if not os.path.exists(path):
+            print(f"[ERROR] Background music file not found: {path}")
+            return
+        try:
+            pygame.mixer.music.load(path)
+            print(f"[DEBUG] Background music loaded: {filename} from {path}")
+            pygame.mixer.music.set_volume(volume)
+            pygame.mixer.music.play(-1)
+            print(f"[DEBUG] Game music playback started.")
+        except Exception as e:
+            print(f"[ERROR] Failed to play background music: {e}")
 
 
     def stop_background_music(self):

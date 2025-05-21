@@ -79,12 +79,12 @@ try:
                 running = False
         # time.sleep(0.5)
 
-        print(f"[DEBUG] getting delta time")
+        # print(f"[DEBUG] getting delta time")
         delta_time = clock.get_time()
         
-        print(f"[DEBUG] Updating controller with delta time: {delta_time}")
+        # print(f"[DEBUG] Updating controller with delta time: {delta_time}")
         controller.update(delta_time)
-        print(f"[DEBUG] Updating screen API")
+        # print(f"[DEBUG] Updating screen API")
         screen_api.update(
             state=controller.get_state(),
             score=controller.get_score(),
