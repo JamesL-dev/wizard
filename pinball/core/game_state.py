@@ -78,7 +78,7 @@ class GameStateController:
             if event_name == "start_button_pressed":
                 print("Transitioning to play mode")
                 self.state = "play"
-                self.sound_api.set_background_music("pinball_wizard.wav", volume=1.0)
+                self.sound_api.set_background_music("pinball_wizard.wav", volume=0.5)
 
                 self.score = 0
                 self.modbus_api.write_value("drop_target_reset", True)
@@ -115,7 +115,7 @@ class GameStateController:
                     self.previous_state = 'play'
                     self.game_over_elapsed_time = 0
                     self.active_balls = 0
-                    self.sound_api.set_background_music("fight_song.wav", volume=1.0)
+                    self.sound_api.set_background_music("fight_song.wav", volume=0.5)
                     self.modbus_api.write_value("game_over_bit", True)
                     time.sleep(10)
                     
