@@ -124,6 +124,7 @@ class GameStateController:
 
         # game over state
         elif self.state == "game_over":
+            self.sound_api.set_background_music("fight_song.wav", volume=1.0)
             if event_name == "start_button_pressed":
                 print("Restarting game")
                 self.state = "play"
