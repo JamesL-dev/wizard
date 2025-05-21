@@ -57,6 +57,7 @@ class GameStateController:
         self.game_over_elapsed_time = 0
 
         self.last_sling_time = 0
+        print(f"[GameStateController] Initialized with state: {self.state}")
 
     def handle_event(self, event_name: str):
         print(f"[GameStateController] Handling event: {event_name}")
@@ -120,9 +121,11 @@ class GameStateController:
                 self.game_over_elapsed_time = 0
 
     def update(self, delta_time: int):
+        print("[GameStateController] reading all values")
         all_values = self.modbus_api.read_all()
 
         # Check for low start_button coil
+        print("[GameStateController] Checking start button")
         start_button_val = all_values.get("start_button", 1)  # assume 1 if missing
         if self.state == "play" and start_button_val == 0:
             print("[GameStateController] Start button released — returning to attract mode")

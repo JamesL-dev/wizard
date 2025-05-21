@@ -17,17 +17,20 @@ class SoundAPI:
         path = os.path.join(self.sound_dir, filename)
         if os.path.exists(path):
             self.sounds[name] = pygame.mixer.Sound(path)
+            print(f"[DEBUG] Sound loaded: {name} from {path}")
         else:
             raise FileNotFoundError(f"Sound file not found: {path}")
 
     def play(self, name):
         if name in self.sounds:
+            print(f"[DEBUG] Playing sound: {name}")
             self.sounds[name].play()
         else:
             print(f"[SoundManager] No sound loaded with name '{name}'.")
 
     def stop(self, name):
         if name in self.sounds:
+            print(f"[DEBUG] Stopping sound: {name}")
             self.sounds[name].stop()
             
     def set_volume(self, name, volume):
@@ -36,20 +39,20 @@ class SoundAPI:
         else:
             print(f"[SoundManager] No sound loaded with name '{name}'.")
     
-    def set_background_music(self, filename: str, volume: float = 1.0):
-        if pygame.mixer.music.get_busy():
-            pygame.mixer.music.stop()
-        path = os.path.join(self.sound_dir, filename)
-        if os.path.exists(path):
-            try:
-                pygame.mixer.music.load(path)
-                pygame.mixer.music.set_volume(volume)
-                pygame.mixer.music.play(-1)
-            except Exception as e:
-                print(f"[ERROR] Failed to play background music: {e}")
-        else:
-            raise FileNotFoundError(f"Background music file not found: {path}")
+def set_background_music(self, filename: str, volume: float = 1.0):
+    print(f"[DEBUG] Setting background music: {filename} with volume {volume}")
+    path = os.path.join(self.sound_dir, filename)
+    if not os.path.exists(path):
+        print(f"[ERROR] Background music file not found: {path}")
+        return
+    try:
+        pygame.mixer.music.load(path)
+        print(f"[DEBUG] Background music loaded: {filename} from {path}")
+        pygame.mixer.music.set_volume(volume)
+        pygame.mixer.music.play(-1)
         print(f"[DEBUG] Game music playback started.")
+    except Exception as e:
+        print(f"[ERROR] Failed to play background music: {e}")
 
 
     def stop_background_music(self):
