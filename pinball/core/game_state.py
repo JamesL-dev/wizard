@@ -70,6 +70,9 @@ class GameStateController:
         # attract state
         if self.state == "attract":
             
+            if self.previous_state == 'game_over':
+                self.sound_api.set_background_music("pinball_wizard.wav", volume=0.5)
+                self.previous_state = 'attract'
             # get music playing if not already
             # if pygame.mixer.music.get_busy() is False:
             #     self.sound_api.set_background_music("fight_song.wav", volume=1.0)
@@ -78,15 +81,15 @@ class GameStateController:
             if event_name == "start_button_pressed":
                 print("Transitioning to play mode")
                 self.state = "play"
-                self.sound_api.set_background_music("pinball_wizard.wav", volume=0.5)
+                # self.sound_api.set_background_music("pinball_wizard.wav", volume=0.5)
 
                 self.score = 0
                 self.modbus_api.write_value("drop_target_reset", True)
                 self.modbus_api.write_value("load_ball", True)
                 self.modbus_api.write_value("load_ball", False)
             # reset previous state
-            if self.previous_state != 'attract':
-                self.previous_state = 'attract'
+            # if self.previous_state != 'attract':
+            #     self.previous_state = 'attract'
 
         # play state
         elif self.state == "play":
@@ -94,6 +97,10 @@ class GameStateController:
             
             print(f"Current ball: {self.current_ball}")
             print(f"Active balls: {self.active_balls}")
+            
+            if self.previous_state == 'game_over' or self.previous_state == 'attract':
+                self.sound_api.set_background_music("pinball_wizard.wav", volume=0.5)
+                self.previous_state = 'play'
             
             # if self.current_ball < self.num_balls and self.active_balls == 0:
             #     print("Loading ball")
@@ -115,7 +122,7 @@ class GameStateController:
                     self.previous_state = 'play'
                     self.game_over_elapsed_time = 0
                     self.active_balls = 0
-                    self.sound_api.set_background_music("fight_song.wav", volume=0.5)
+                    # self.sound_api.set_background_music("fight_song.wav", volume=0.5)
                     self.modbus_api.write_value("game_over_bit", True)
                     time.sleep(10)
                     
@@ -124,7 +131,10 @@ class GameStateController:
 
         # game over state
         elif self.state == "game_over":
-            self.sound_api.set_background_music("fight_song.wav", volume=1.0)
+            if self.previous_state == 'play':
+                self.sound_api.set_background_music("game_over.wav", volume=0.5)
+                self.previous_state = 'game_over'
+            # self.sound_api.set_background_music("fight_song.wav", volume=1.0)
             if event_name == "start_button_pressed":
                 print("Restarting game")
                 self.state = "play"
@@ -156,8 +166,8 @@ class GameStateController:
                 self.current_ball = 1
                 self.game_over_elapsed_time = 0
             return  # skip further updates this tick
-
-        if self.state == "game_over":
+        
+        elif self.state == "game_over":
             self.game_over_elapsed_time += delta_time
             if self.game_over_elapsed_time > 10000:
                 print("[GameStateController] Game over timeout reached — returning to attract mode")
