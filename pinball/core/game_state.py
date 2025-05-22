@@ -220,7 +220,7 @@ class GameStateController:
             self.game_over_elapsed_time += delta_time
             if self.previous_state == "play":
                 self.sound_api.set_background_music("fight_song.wav", volume=0.5)
-                self.previous_state = "play"
+                self.previous_state = "game_over"
 
             if self.game_over_elapsed_time > 10000:
                 print("[GameStateController] Game over timeout reached — returning to attract mode")
