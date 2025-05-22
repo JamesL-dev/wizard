@@ -44,6 +44,7 @@ sound_api = SoundAPI(sound_dir=sound_path)
 # sound_api.load_sound("fight_song", "fight_song.mp3")
 # sound_api.load_sound("awakening", "awakening.mp3")
 sound_api.load_sound("chaching", "chaching.mp3")
+sound_api.load_sound("ball_drain", "ball_drain.wav")
 
 controller = GameStateController(
     screen_api=screen_api,
@@ -88,7 +89,9 @@ try:
         screen_api.update(
             state=controller.get_state(),
             score=controller.get_score(),
-            ball=controller.get_ball()
+            ball=controller.get_ball(),
+            ball_launch=controller.get_ball_launch(),
+            high_scores=controller.high_scores.get_scores()
         )
         
         clock.tick(30)
