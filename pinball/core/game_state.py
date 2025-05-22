@@ -54,6 +54,7 @@ class GameStateController:
         self.state = "attract"
         self.previous_state = 'attract'
         self.score = 0
+        self.last_score = 0
         self.num_balls = 3
         self.current_ball = 0
         self.game_over_elapsed_time = 0
@@ -63,7 +64,7 @@ class GameStateController:
         self.awaiting_high_score = False
         print(f"[GameStateController] High scores loaded: {self.high_scores.get_scores()}")
 
-        # self.sound_api.set_background_music("fight_song.wav", volume=1.0)
+        self.sound_api.set_background_music("fight_song.wav", volume=1.0)
         # self.last_sling_time = 0
         print(f"[GameStateController] Initialized with state: {self.state}")
 
@@ -74,8 +75,9 @@ class GameStateController:
 
         # attract state
         if self.state == "attract":
-            
-            if (pygame.mixer.music.get_busy() is False) or (self.previous_state == 'game_over') or (self.previous_state == 'play'):
+            # if pygame.mixer.music.get_busy() is False:
+            #     self.sound_api.set_background_music("fight_song.wav", volume=0.5)
+            if self.previous_state == 'game_over' or self.previous_state == 'play':
                 self.sound_api.set_background_music("fight_song.wav", volume=0.5)
                 self.previous_state = 'attract'
             # get music playing if not already
@@ -114,10 +116,13 @@ class GameStateController:
             print(f"Current ball: {self.current_ball}")
             print(f"Active balls: {self.active_balls}")
             
+            if pygame.mixer.music.get_busy() is False:
+                self.sound_api.set_background_music("pinball_wizard.wav", volume=0.5)
+            
             if self.previous_state == 'game_over' or self.previous_state == 'attract':
                 self.sound_api.set_background_music("pinball_wizard.wav", volume=0.5)
                 self.previous_state = 'play'
-                # self.score = 0
+                self.score = 0
                 # self.modbus_api.write_value("drop_target_reset", True)
                 
             
@@ -152,10 +157,10 @@ class GameStateController:
 
         # game over state
         elif self.state == "game_over":
-            print("Checking for high score")
-            if self.high_scores.is_high_score(self.score):
-                print(f"[HighScore] New high score: {self.score}")
-                self.awaiting_high_score = True
+            # print("Checking for high score")
+            # if self.high_scores.is_high_score(self.score):
+            #     print(f"[HighScore] New high score: {self.score}")
+            #     self.awaiting_high_score = True
 
             if self.previous_state == 'play' or self.previous_state == 'attract':
                 self.sound_api.set_background_music("fight_song.wav", volume=0.5)
@@ -164,6 +169,8 @@ class GameStateController:
             # self.sound_api.set_background_music("fight_song.wav", volume=1.0)
             if event_name == "start_button_pressed":
                 print("Restarting game")
+                self.last_score = self.score
+                # self.score = 0
                 self.state = "play"
                 self.previous_state = 'game_over'
 
@@ -177,12 +184,17 @@ class GameStateController:
             #     self.game_over_elapsed_time = 0
 
     def update(self, delta_time: int):
-        
         if self.awaiting_high_score:
             player_name = self.screen_api.get_player_name(self.score)
-            self.high_scores.add_score(self.score, name=player_name)
+            self.high_scores.add_score(self.last_score, name=player_name)
             print(f"[HighScore] Saved: {player_name} - {self.score}")
             self.awaiting_high_score = False
+            
+        if self.state == "game_over" and not self.awaiting_high_score:
+            if self.high_scores.is_high_score(self.score):
+                print(f"[HighScore] New high score: {self.score}")
+                self.awaiting_high_score = True
+                return
 
         # print("[GameStateController] reading all values")
         all_values = self.modbus_api.read_all()
@@ -201,20 +213,11 @@ class GameStateController:
                 self.game_over_elapsed_time = 0
             # return  # skip further updates this tick
         
-        # elif self.state == "launch":
-        #     shooter_lane_val = all_values.get("shooter_lane_switch", 1)  # assume 1 if missing
-        #     if shooter_lane_val == 0:
-        #         print("[GameStateController] Shooter lane switch released — returning to play mode")
-        #         self.state = "play"
-        #         self.previous_state = "launch"
-                # self.score = 0
-                # self.current_ball = 1
-                # self.game_over_elapsed_time = 0
-        
         elif self.state == "game_over":
             self.game_over_elapsed_time += delta_time
             if self.game_over_elapsed_time > 10000:
                 print("[GameStateController] Game over timeout reached — returning to attract mode")
+                self.last_score = self.score
                 self.state = "attract"
                 self.previous_state = "game_over"
                 # self.score = 0

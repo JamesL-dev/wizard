@@ -91,7 +91,8 @@ try:
             score=controller.get_score(),
             ball=controller.get_ball(),
             ball_launch=controller.get_ball_launch(),
-            high_scores=controller.high_scores.get_scores()
+            high_scores=controller.high_scores.get_scores(),
+            last_score=controller.last_score,
         )
         
         clock.tick(30)

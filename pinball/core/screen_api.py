@@ -9,8 +9,8 @@ class ScreenAPI:
     def __init__(self):
         pygame.init()
         self.WIDTH, self.HEIGHT = pygame.display.Info().current_w, pygame.display.Info().current_h
-        self.screen = pygame.display.set_mode((self.WIDTH, self.HEIGHT), pygame.FULLSCREEN)
-        # self.screen = pygame.display.set_mode((self.WIDTH, self.HEIGHT), pygame.NOFRAME)
+        # self.screen = pygame.display.set_mode((self.WIDTH, self.HEIGHT), pygame.FULLSCREEN)
+        self.screen = pygame.display.set_mode((self.WIDTH, self.HEIGHT), pygame.NOFRAME)
         pygame.display.set_caption("Wizard Pinball Marquee")
 
         self.BLACK = (0, 0, 0)
@@ -41,10 +41,10 @@ class ScreenAPI:
 
         # self.high_scores = [("Gary", 10000), ("Tim", 8500), ("James", 7200)]
 
-    def update(self, state: str, score: int = 0, ball: int = 0, ball_launch: int = 0, high_scores: list = []):
+    def update(self, state: str, score: int = 0, ball: int = 0, ball_launch: int = 0, high_scores: list = [], last_score: int = 0):
         if state == "attract":
             if (pygame.time.get_ticks() // 5000) % 2 == 0:
-                self.draw_attract()
+                self.draw_attract(last_score=last_score)
             else:
                 self.draw_high_scores(high_scores=high_scores)
         # elif state == "launch":
@@ -55,28 +55,45 @@ class ScreenAPI:
             else:
                 self.draw_launch(ball)
         elif state == "game_over":
-            self.draw_game_over(score)
+            self.draw_game_over(last_score)
         # elif state == "high_scores":
         #     self.draw_high_scores()
 
-    def draw_attract(self):
+    def draw_attract(self, last_score: int = 0):
         self.screen.fill(self.BLACK)
+
+        # Draw stars and flashing orbs
         for star in self.fixed_stars:
             pygame.draw.circle(self.screen, self.WHITE, star, 2)
         for orb in self.flashing_orbs:
             alpha = (math.sin(pygame.time.get_ticks() / 1000) + 1) / 2
-            color = (int(self.YELLOW[0] * alpha), int(self.YELLOW[1] * alpha), int(self.YELLOW[2] * alpha))
+            color = (
+                int(self.YELLOW[0] * alpha),
+                int(self.YELLOW[1] * alpha),
+                int(self.YELLOW[2] * alpha)
+            )
             pygame.draw.circle(self.screen, color, (orb[0], orb[1]), orb[2])
 
+        # Game title
         title = self.font.render("Wizard Pinball", True, self.YELLOW)
         self.screen.blit(title, title.get_rect(center=(self.WIDTH // 2, 80)))
+
+        # Last score display
+        if last_score > 0:
+            score_font = pygame.font.Font(None, 48)
+            score_text = score_font.render(f"Last Score: {last_score}", True, self.WHITE)
+            self.screen.blit(score_text, score_text.get_rect(center=(self.WIDTH // 2, 140)))
+
+        # Logo
         self.screen.blit(self.logo, (self.WIDTH // 2 - 150, self.HEIGHT // 2))
 
+        # Flashing "PRESS START"
         if pygame.time.get_ticks() % 1000 < 500:
             press_start_text = self.press_start_font.render("PRESS START", True, self.WHITE)
             self.screen.blit(press_start_text, press_start_text.get_rect(center=(self.WIDTH // 2, self.HEIGHT // 2 - 50)))
 
         pygame.display.flip()
+
 
     def draw_launch(self, ball: int = 0):
         self.screen.fill(self.BLACK)
