@@ -1,0 +1,17 @@
+[
+  {
+    "name": "AAA",
+    "score": 500,
+    "timestamp": "2025-05-22 08:57"
+  },
+  {
+    "name": "BBB",
+    "score": 400,
+    "timestamp": "2025-05-22 09:04"
+  },
+  {
+    "name": "CCC",
+    "score": 300,
+    "timestamp": "2025-05-22 08:48"
+  }
+]
