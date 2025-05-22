@@ -115,8 +115,8 @@ class GameStateController:
             print(f"Current ball: {self.current_ball}")
             print(f"Active balls: {self.active_balls}")
             
-            if pygame.mixer.music.get_busy() is False:
-                self.sound_api.set_background_music("pinball_wizard.wav", volume=0.5)
+            # if pygame.mixer.music.get_busy() is False:
+            #     self.sound_api.set_background_music("pinball_wizard.wav", volume=0.5)
             
             if self.previous_state == 'game_over' or self.previous_state == 'attract':
                 #self.sound_api.set_background_music("pinball_wizard.wav", volume=0.5)
