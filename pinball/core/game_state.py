@@ -1,5 +1,5 @@
 """
-Game State Controller
+G#ame State Controller
 =====================
 
 This module defines the Game State Controller class.
@@ -64,7 +64,7 @@ class GameStateController:
         self.awaiting_high_score = False
         print(f"[GameStateController] High scores loaded: {self.high_scores.get_scores()}")
 
-        self.sound_api.set_background_music("fight_song.wav", volume=1.0)
+        self.sound_api.set_background_music("fight_song.wav", volume=0.5)
         # self.last_sling_time = 0
         print(f"[GameStateController] Initialized with state: {self.state}")
 
@@ -78,7 +78,6 @@ class GameStateController:
             # if pygame.mixer.music.get_busy() is False:
             #     self.sound_api.set_background_music("fight_song.wav", volume=0.5)
             if self.previous_state == 'game_over' or self.previous_state == 'play':
-                self.sound_api.set_background_music("fight_song.wav", volume=0.5)
                 self.previous_state = 'attract'
             # get music playing if not already
             # if pygame.mixer.music.get_busy() is False:
@@ -120,7 +119,7 @@ class GameStateController:
                 self.sound_api.set_background_music("pinball_wizard.wav", volume=0.5)
             
             if self.previous_state == 'game_over' or self.previous_state == 'attract':
-                self.sound_api.set_background_music("pinball_wizard.wav", volume=0.5)
+                #self.sound_api.set_background_music("pinball_wizard.wav", volume=0.5)
                 self.previous_state = 'play'
                 self.score = 0
                 # self.modbus_api.write_value("drop_target_reset", True)
@@ -134,8 +133,8 @@ class GameStateController:
             
             # check if event is ball_drain and lose condition
             if event_name == "ball_drain_pressed":
-                self.sound_api.play("ball_drain")
                 print("Ball drained")
+                self.sound_api.play("ball_drain")
                 if self.current_ball < self.num_balls:
                     self.active_balls = 0
                     self.modbus_api.write_value("load_ball", True)
@@ -203,10 +202,14 @@ class GameStateController:
         # print("[GameStateController] Checking start button")
         start_button_val = all_values.get("start_button", 1)  # assume 1 if missing
         if self.state == "play":
+            if self.previous_state == "attract" or self.previous_state == "game_over":
+                self.sound_api.set_background_music("pinball_wizard.wav", volume=0.5)
+                self.previous_state = "play"
             self.update_score()
+
             if start_button_val == 0:
                 # print("[GameStateController] Start button released — returning to attract mode")
-                self.state = "attract"
+                self.state = "game_over"
                 self.previous_state = "play"
                 # self.score = 0
                 # self.current_ball = 1
@@ -215,6 +218,10 @@ class GameStateController:
         
         elif self.state == "game_over":
             self.game_over_elapsed_time += delta_time
+            if self.previous_state == "play":
+                self.sound_api.set_background_music("fight_song.wav", volume=0.5)
+                self.previous_state = "play"
+
             if self.game_over_elapsed_time > 10000:
                 print("[GameStateController] Game over timeout reached — returning to attract mode")
                 self.last_score = self.score
