@@ -9,10 +9,14 @@ class ScreenAPI:
     def __init__(self):
         pygame.init()
         self.WIDTH, self.HEIGHT = pygame.display.Info().current_w, pygame.display.Info().current_h
-        self.screen = pygame.display.set_mode((self.WIDTH, self.HEIGHT), pygame.FULLSCREEN)
-        # self.screen = pygame.display.set_mode((self.WIDTH, self.HEIGHT), pygame.NOFRAME)
-        pygame.display.set_caption("Wizard Pinball Marquee")
+        # self.screen = pygame.display.set_mode((self.WIDTH, self.HEIGHT), pygame.FULLSCREEN)
+        self.screen = pygame.display.set_mode((self.WIDTH, self.HEIGHT), pygame.NOFRAME)
+        pygame.display.set_caption("Wizard Pinball")
+        
+        # Hide the mouse cursor
+        pygame.mouse.set_visible(False)
 
+        # Initialize colors
         self.BLACK = (0, 0, 0)
         self.WHITE = (255, 255, 255)
         self.YELLOW = (241, 179, 0)
@@ -37,16 +41,71 @@ class ScreenAPI:
 
         self.fixed_stars = [(random.randint(50, self.WIDTH - 50), random.randint(100, self.HEIGHT - 100)) for _ in range(15)]
         self.flashing_orbs = [(random.randint(100, self.WIDTH - 100), random.randint(150, self.HEIGHT - 150), random.randint(30, 60)) for _ in range(5)]
+        
+        # Attract mode cycle
+        self.attract_index = 0
+        self.last_attract_switch = pygame.time.get_ticks()
+        self.attract_delay = 2000  # 5 seconds per image
+    
+        # Load attract images
+        self.attract_images = []
+        image_dir = os.path.join(project_root, "assets", "images", "attract")
+        # print(f"[ScreenAPI] Loading attract images from {image_dir}")
+        if os.path.exists(image_dir):
+            for fname in sorted(os.listdir(image_dir)):
+                # print(f"[ScreenAPI] Found file: {fname}")
+                if fname.lower().endswith((".png", ".jpg", ".jpeg")):
+                    path = os.path.join(image_dir, fname)
+                    try:
+                        img = pygame.image.load(path).convert()
+                        img = pygame.transform.scale(img, (self.WIDTH, self.HEIGHT))
+                        self.attract_images.append(img)
+                    except Exception as e:
+                        print(f"Failed to load {fname}: {e}")
+
+        # Construct dynamic attract cycle
+        self.attract_cycle = []
+        self.attract_cycle.append("main")  # Start with main attract mode
+        for i in range(len(self.attract_images)):
+            if i % 2 == 0:
+                self.attract_cycle.append("main")
+                self.attract_cycle.append(i)
+            else:
+                self.attract_cycle.append("high_scores")
+                self.attract_cycle.append(i)
+            # self.attract_cycle.append("high_scores")
+        # Ensure we wrap around nicely
+        # if len(self.attract_images) % 2 == 0:
+        #     self.attract_cycle.append("main")
+        
+        print(f"[ScreenAPI] Attract cycle: {self.attract_cycle}")
 
 
         # self.high_scores = [("Gary", 10000), ("Tim", 8500), ("James", 7200)]
 
     def update(self, state: str, score: int = 0, ball: int = 0, ball_launch: int = 0, high_scores: list = [], last_score: int = 0):
         if state == "attract":
-            if (pygame.time.get_ticks() // 5000) % 2 == 0:
+            now = pygame.time.get_ticks()
+            if now - self.last_attract_switch > self.attract_delay:
+                print(f"[ScreenAPI] Time since last switch: {now - self.last_attract_switch} ms")
+                self.attract_index = (self.attract_index + 1) % len(self.attract_cycle)
+                self.last_attract_switch = now
+                
+            mode = self.attract_cycle[self.attract_index]
+            # print(f"[ScreenAPI] Attract mode: {mode} (index {self.attract_index})")
+            if mode == "main":
                 self.draw_attract(last_score=last_score)
-            else:
+            elif mode == "high_scores":
                 self.draw_high_scores(high_scores=high_scores)
+            elif isinstance(mode, int):
+                if mode < len(self.attract_images):
+                    self.screen.blit(self.attract_images[mode], (0, 0))
+                    pygame.display.flip()
+
+            # if (pygame.time.get_ticks() // 5000) % 2 == 0:
+            #     self.draw_attract(last_score=last_score)
+            # else:
+            #     self.draw_high_scores(high_scores=high_scores)
         # elif state == "launch":
         #     self.draw_launch(ball)
         elif state == "play":

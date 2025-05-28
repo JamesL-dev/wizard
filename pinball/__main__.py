@@ -30,6 +30,7 @@ from core.event_api import EventAPI
 from core.game_state import GameStateController
 
 plc_modbus_ip = "192.168.1.10"
+# plc_modbus_ip = "localhost"  # For local testing, use localhost
 plc_modbus_port = 502
 
 config_path = os.path.join(os.path.dirname(__file__), "config/devices.json")
