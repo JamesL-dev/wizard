@@ -2,6 +2,7 @@ import pygame
 import os
 import math
 import random
+from PIL import Image, ImageOps
 
 from core.game_state import GameStateController
 
@@ -57,9 +58,18 @@ class ScreenAPI:
                 if fname.lower().endswith((".png", ".jpg", ".jpeg")):
                     path = os.path.join(image_dir, fname)
                     try:
-                        img = pygame.image.load(path).convert()
-                        img = pygame.transform.scale(img, (self.WIDTH, self.HEIGHT))
-                        self.attract_images.append(img)
+                        pil_img = Image.open(path)
+                        pil_img = ImageOps.exif_transpose(pil_img)  # Handle EXIF orientation
+                        
+                        pil_img = pil_img.convert("RGB")  # Ensure RGB format
+                        mode = "RGB"
+                        size = pil_img.size
+                        data = pil_img.tobytes()
+                        
+                        img_surface = pygame.image.fromstring(data, size, mode)
+                        # img = pygame.image.load(path).convert()
+                        # img = pygame.transform.scale(img, (self.WIDTH, self.HEIGHT))
+                        self.attract_images.append(img_surface)
                     except Exception as e:
                         print(f"Failed to load {fname}: {e}")
 
