@@ -97,10 +97,33 @@ class ScreenAPI:
                 self.draw_attract(last_score=last_score)
             elif mode == "high_scores":
                 self.draw_high_scores(high_scores=high_scores)
-            elif isinstance(mode, int):
+            elif isinstance(mode, int):  # It's an image index
                 if mode < len(self.attract_images):
-                    self.screen.blit(self.attract_images[mode], (0, 0))
+                    img = self.attract_images[mode]
+                    img_rect = img.get_rect()
+
+                    # Get aspect ratios
+                    screen_ratio = self.WIDTH / self.HEIGHT
+                    img_ratio = img_rect.width / img_rect.height
+
+                    # Scale image to fit screen
+                    if img_ratio > screen_ratio:
+                        # Image is wider relative to screen
+                        scale_width = self.WIDTH
+                        scale_height = int(self.WIDTH / img_ratio)
+                    else:
+                        # Image is taller relative to screen
+                        scale_height = self.HEIGHT
+                        scale_width = int(self.HEIGHT * img_ratio)
+
+                    # Scale and center
+                    scaled_img = pygame.transform.smoothscale(img, (scale_width, scale_height))
+                    x = (self.WIDTH - scale_width) // 2
+                    y = (self.HEIGHT - scale_height) // 2
+                    self.screen.fill(self.BLACK)  # Optional: black bars around the image
+                    self.screen.blit(scaled_img, (x, y))
                     pygame.display.flip()
+
 
             # if (pygame.time.get_ticks() // 5000) % 2 == 0:
             #     self.draw_attract(last_score=last_score)
