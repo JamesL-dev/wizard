@@ -1,17 +1,17 @@
 [
   {
-    "name": "ZOE",
-    "score": 6400,
+    "name": "AAA",
+    "score": 500,
     "timestamp": "2025-05-22 08:57"
   },
   {
-    "name": "CMD",
-    "score": 3200,
+    "name": "BBB",
+    "score": 400,
     "timestamp": "2025-05-22 09:04"
   },
   {
-    "name": "KRW",
-    "score": 2800,
+    "name": "CCC",
+    "score": 300,
     "timestamp": "2025-05-22 08:48"
   }
 ]
