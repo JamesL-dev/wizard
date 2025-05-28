@@ -10,8 +10,8 @@ class ScreenAPI:
     def __init__(self):
         pygame.init()
         self.WIDTH, self.HEIGHT = pygame.display.Info().current_w, pygame.display.Info().current_h
-        # self.screen = pygame.display.set_mode((self.WIDTH, self.HEIGHT), pygame.FULLSCREEN)
-        self.screen = pygame.display.set_mode((self.WIDTH, self.HEIGHT), pygame.NOFRAME)
+        self.screen = pygame.display.set_mode((self.WIDTH, self.HEIGHT), pygame.FULLSCREEN)
+        # self.screen = pygame.display.set_mode((self.WIDTH, self.HEIGHT), pygame.NOFRAME)
         pygame.display.set_caption("Wizard Pinball")
         
         # Hide the mouse cursor
