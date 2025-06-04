@@ -19,7 +19,7 @@ class EventAPI:
     Allows registering callbacks for specific events.
     """
     def __init__(self, modbus_api: ModbusAPI):
-        self.api = modbus_api
+        self.modbus_api = modbus_api
         self.callbacks = {}
         self.last_values = {}
         self.running = True
@@ -34,6 +34,7 @@ class EventAPI:
     def _emit(self, event_name: str):
         for callback in self.callbacks.get(event_name, []):
             callback()
+        print(f"[GameEventSystem] Event {event_name} emitted")
     
     def emit(self, event_name: str):
         """Emit custom event"""
@@ -42,15 +43,16 @@ class EventAPI:
 
     def _monitor_loop(self):
         while self.running:
-            current_values = self.api.read_all()
+            current_values = self.modbus_api.read_all()
             for name, current in current_values.items():
                 last = self.last_values.get(name, 0)
                 # if current == 1 and last == 0:
                 #     self._emit(f"{name}_pressed")
                 if current != last:
+                    print(f"[GameEventSystem] {name} changed from {last} to {current}")
                     self._emit(f"{name}_pressed")
-                elif current != last:
-                    self._emit(f"{name}_changed")
+                # elif current != last:
+                #     self._emit(f"{name}_changed")
                 self.last_values[name] = current
             time.sleep(0.05)
 

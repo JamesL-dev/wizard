@@ -30,41 +30,43 @@
         "reg_type": "coil",
         "direction": "output"
     },
+
+
     "slingshot": {
       "address": 1,
       "reg_type": "input_register",
       "direction": "input",
-      "score": 10
+      "score": 100
     },
     "drop_target_accumulator": {
       "address": 2,
       "reg_type": "input_register",
       "direction": "input",
-      "score": 10
+      "score": 500
     },
     "lane_switch_accumulator_1": {
       "address": 3,
       "reg_type": "input_register",
       "direction": "input",
-      "score": 10
+      "score": 100
     },
     "lane_switch_accumulator_2": {
       "address": 4,
       "reg_type": "input_register",
       "direction": "input",
-      "score": 10
+      "score": 100
     },
     "lane_switch_accumulator_3": {
       "address": 5,
       "reg_type": "input_register",
       "direction": "input",
-      "score": 10
+      "score": 100
     },
     "lane_switch_accumulator_4": {
       "address": 6,
       "reg_type": "input_register",
       "direction": "input",
-      "score": 10
+      "score": 100
     },
     "ball_drain": {
       "address": 7,
@@ -75,7 +77,7 @@
       "address": 8,
       "reg_type": "input_register",
       "direction": "input",
-      "score": 10
+      "score": 100
     },
     "shooter_lane_switch": {
       "address": 11,
