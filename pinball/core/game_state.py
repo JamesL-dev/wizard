@@ -212,11 +212,6 @@ class GameStateController:
                 self.previous_state = "play"
             self.update_score()
 
-            if all_values.get("drop_target_accumulator") == 3:
-                print("[GameStateController] Drop target accumulator reached 3 — resetting")
-                self.modbus_api.write_value("drop_target_reset", True)
-                self.modbus_api.write_value("drop_target_reset", False)
-
             if start_button_val == 0:
                 # print("[GameStateController] Start button released — returning to attract mode")
                 self.state = "game_over"
