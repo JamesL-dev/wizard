@@ -208,7 +208,7 @@ class GameStateController:
         start_button_val = all_values.get("start_button", 1)  # assume 1 if missing
         if self.state == "play":
             if self.previous_state == "attract" or self.previous_state == "game_over":
-                self.sound_api.set_background_music("pinball_wizard.wav", volume=self.main_volume)
+                self.sound_api.set_background_music("awakening.mp3", volume=self.main_volume)
                 self.previous_state = "play"
             self.update_score()
 
