@@ -1,0 +1,20 @@
+[Unit]
+Description=Wizard Pinball Game
+After=network.target
+After=graphical.target
+Wants=graphical.target
+
+[Service]
+#Type=simple
+User=pi
+WorkingDirectory=/home/pi/wizard
+Environment="PATH=/home/pi/wizard/pinball/.venv/bin:/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin"
+Environment=DISPLAY=:0
+ExecStart=/home/pi/wizard/start_wizard.sh
+Restart=on-failure
+StandardOutput=journal
+StandardError=journal
+
+[Install]
+WantedBy=graphical.target
+
