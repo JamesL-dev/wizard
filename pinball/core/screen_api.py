@@ -132,6 +132,12 @@ class ScreenAPI:
                     y = (self.HEIGHT - scale_height) // 2
                     self.screen.fill(self.BLACK)  # Optional: black bars around the image
                     self.screen.blit(scaled_img, (x, y))
+                    # Flashing "PRESS START"
+                    if pygame.time.get_ticks() % 1000 < 500:
+                        press_start_text = self.press_start_font.render("PRESS START", True, self.YELLOW)
+                        self.screen.blit(press_start_text, press_start_text.get_rect(center=(self.WIDTH // 2, self.HEIGHT // 2 - 50)))
+
+                    
                     pygame.display.flip()
 
 
@@ -181,7 +187,7 @@ class ScreenAPI:
 
         # Flashing "PRESS START"
         if pygame.time.get_ticks() % 1000 < 500:
-            press_start_text = self.press_start_font.render("PRESS START", True, self.WHITE)
+            press_start_text = self.press_start_font.render("PRESS START", True, self.YELLOW)
             self.screen.blit(press_start_text, press_start_text.get_rect(center=(self.WIDTH // 2, self.HEIGHT // 2 - 50)))
 
         pygame.display.flip()
@@ -287,7 +293,7 @@ class ScreenAPI:
         self.screen.blit(self.logo, (self.WIDTH // 2 - 150, self.HEIGHT - 400))
 
         if pygame.time.get_ticks() % 1000 < 500:
-            press_start_text = self.press_start_font.render("PRESS START", True, self.WHITE)
+            press_start_text = self.press_start_font.render("PRESS START", True, self.YELLOW)
             self.screen.blit(press_start_text, press_start_text.get_rect(center=(self.WIDTH // 2, self.HEIGHT // 2)))
 
         pygame.display.flip()

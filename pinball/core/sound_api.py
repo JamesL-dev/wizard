@@ -13,10 +13,11 @@ class SoundAPI:
         self.sound_dir: str = sound_dir
         # self.sound_dir: str = os.abspath(os.join(os.path.dirname(__file__), "..", sound_dir))
 
-    def load_sound(self, name, filename):
+    def load_sound(self, name, filename, volume=0.3):
         path = os.path.join(self.sound_dir, filename)
         if os.path.exists(path):
             self.sounds[name] = pygame.mixer.Sound(path)
+            self.sounds[name].set_volume(volume)
             print(f"[DEBUG] Sound loaded: {name} from {path}")
         else:
             raise FileNotFoundError(f"Sound file not found: {path}")
